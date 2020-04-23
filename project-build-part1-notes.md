@@ -32,6 +32,10 @@ Syllabus.create(title: "West African Art History", description: "West African cu
 # source: https://en.wikipedia.org/wiki/African_art
 ```
 
+#### Questions
+1. Why should we do our migrations in our respective branches?
+2. What is the `belongs_to` [attribute in migrations](https://guides.rubyonrails.org/association_basics.html#the-belongs-to-association) doing for us? What's best practice? 
+
 ### Stretch Goals
 - Authentication + Authorization
     - User
