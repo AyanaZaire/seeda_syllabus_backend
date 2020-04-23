@@ -1,0 +1,3 @@
+class Syllabus < ApplicationRecord
+  
+end
