@@ -99,14 +99,14 @@ The application we will create during the project build series is a "Syllabus Sh
         end
         ```
     - Adding Relationships
-        - To control the attributes displayed in the association view PART 2 notes on adding relationships 
+        - To control the attributes displayed in the association view PART 2 notes on adding relationships
 
 
 - [ ] 4. **TEST:** Confirm data at your Rails endpoints! (ex: `http://seeda.com/api/v1/syllabuses`)
 - [ ] 5. Build out your associated models using this same process. **REMEMBER: Focus on building vertically for MVP** this means only starting with 2 or 3 models before moving on to the frontend.
 
 
-### PART 3: DOM Manipulation, Events, and Fetch
+### PART 3: DOM Manipulation, Events, and Fetch using Rails API
 - **JS MANTRA:** When _some event_ happens, I want to make _what kind of_ fetch and then manipulate the DOM _in what way_?
 - [ ] 1. `GET` request
 - [ ] 2. `POST` request

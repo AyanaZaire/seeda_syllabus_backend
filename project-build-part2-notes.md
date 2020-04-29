@@ -1,4 +1,4 @@
-## PART 1 Review
+# PART 1 Review
 
 1. Models/Associations
 2. Schema
@@ -64,6 +64,7 @@
                 - [Stop forgetting your foreign key indexes in Rails with this simple post-migration script](https://alexpeattie.com/blog/stop-forgetting-foreign-key-indexes-in-rails-post-migration-script)
                 - [Ruby Docs on `add_reference`](https://edgeapi.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_reference)
 
+# PART 2: Routes, Controllers, and Fast JSON API Serializer
 
 ## Routes
 
