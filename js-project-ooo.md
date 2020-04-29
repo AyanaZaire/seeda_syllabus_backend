@@ -35,7 +35,7 @@ The application we will create during the project build series is a "Syllabus Sh
 
 **NOTE**: Remember to _**VERTICALLY**_ build your MVP! This means building out one model/feature at a time. DO NOT build out _all_ the models and controllers at the same time. This is the easiest way to get lost in your project very early. Read more about this [here](https://github.com/learn-co-students/js-spa-project-instructions-online-web-sp-000/blob/master/project-planning-tips.md#build-vertically-not-horizontallys).
 
-- [x] 8. Build your models: `rails g model Category name`
+- [x] 8. Build your models: `rails g model <your_model_name> name` (Make sure you capitalize the first letter of the model name!)
     - Migrations
     - Model classes
     - Associations
@@ -46,87 +46,73 @@ The application we will create during the project build series is a "Syllabus Sh
 
 ### PART 2: Routes, Controllers, Serializers
 
-- [ ] 1. Name spaced routes
-- [ ] 2. Controllers rendering JSON based on routes
+- [ ] 1. Routes
+    - Implement _specific_ namespaced routes for _a_ controller **for MVP**
+    - REMEMBER! We're _trying_ to build vertically.
+
+      ```ruby
+      Rails.application.routes.draw do
+        namespace :api do
+          namespace :v1 do
+            resources :syllabuses, only: [:index, :create]
+          end
+        end
+      end
+      ```
+    - Run `rails routes` to confirm routes
+    - Visit `http://localhost:3000/api/v1/<your_resource_name>` to see error
+
+
+- [ ] 2. Controllers
+    - In your console run: `rails g controller api/v1/<your controller_name>` (Make sure you capitalize and the first letter of the controller name!)
+    - Build relevant routes for MVP (ex: `index` and `create`)
+    - Visit `http://localhost:3000/api/v1/<your_resource_name>` to see JSON data
+
+
 - [ ] 3. Fast JSON Serializer
+    - Add `gem 'fast_jsonapi'` to your Rails project's Gemfile and run `bundle install`
+    - Create Serializer classes
+      - `rails g serializer <your_resource_name>`
+      - `rails g serializer <your_resource_name>`
+    - Update Controller Actions
+        ```ruby
+        class Api::V1::SyllabusesController < ApplicationController
+          def index
+            @syllabuses = Syllabus.all
+            # render json: @syllabuses
+            render json: SyllabusSerializer.new(@syllabuses)
+          end
+        end
+        ```
+    - Adding Attributes
+        ```ruby
+        class SyllabusSerializer
+          include FastJsonapi::ObjectSerializer
+          attributes :title, :description, :image_url, :category_id
+        end
+        ```
+    - Accessing Associations (Related Objects)
+        ```ruby
+        class SyllabusSerializer
+          include FastJsonapi::ObjectSerializer
+          attributes :title, :description, :image_url, :category_id, :category
+        end
+        ```
+    - Adding Relationships
+        - To control the attributes displayed in the association view PART 2 notes on adding relationships 
 
-<!--
 
-**NOW, CONSIDER USER CONTROLLER, APPLICATION CONTROLLER, AND VIEWS**
+- [ ] 4. **TEST:** Confirm data at your Rails endpoints! (ex: `http://seeda.com/api/v1/syllabuses`)
+- [ ] 5. Build out your associated models using this same process. **REMEMBER: Focus on building vertically for MVP** this means only starting with 2 or 3 models before moving on to the frontend.
 
-*IMPORTANT:* Build views and controller actions based on the flow of your app, one step at a time, testing as you go!
 
-- Use `shotgun` and `pry` (or `raise`/`inspect`) all the time!
+### PART 3: DOM Manipulation, Events, and Fetch
+- **JS MANTRA:** When _some event_ happens, I want to make _what kind of_ fetch and then manipulate the DOM _in what way_?
+- [ ] 1. `GET` request
+- [ ] 2. `POST` request
 
-**START WITH LOGIN**
-
-- [x] 9. Create your `UsersController`
-  - Mount new controller in `config.ru` with `use UsersController` (Why do we add this?)
-
-- [x] 10. Enable `sessions` in `ApplicationController`
-    - Enable sessions
-    - Create session secret
-
-- [x] 11. Build routes and views for login
-  - Build your `get` login route + "login" view
-  - Build your `post` login route
-      - **Tip**: Here is where we authenticate the user and leverage the session hash to log them in!
-  - Build your `get users/:id` route + "show" view
-
-- [x] 12. Create your `ApplicationController` helper methods
-  - **Ask**: Why do we add this?
-  - `#logged_in?`: checks if the user is logged in
-  - `#current_user`: keeps track of the user currently logged in
-
-**MOVE ON TO SIGN UP**
-- [x] 13. Build routes and views for signup
-  - Build your `get` signup route + "signup" view
-  - Build your `post` signup route
-
-**WRAP UP WITH LOG OUT**
-- [x] 14. Build your `get` logout route
-
-### PART 3 — CRUD: Create, Read, Update, Delete
-
-- [x] 15. Create your `PostsController`
-  - Mount new controller in `config.ru` with `use PostsController`
-  - **Ask**: Why do we add this? ^
-
-- [x] 16. Implement READ functionality
-  - Create `get` posts route
-  - Create a view for displaying all posts
-  - Create show route
-
-- [x] 17. Implement CREATE functionality
-  - Create `get` posts route and view to render form
-  - Create `post` route to create new post
-
-- [x] 18. Implement UPDATE functionality
-  - Add `use Rack::MethodOverride` in `config.ru`
-  - **Ask**: Why do we add this? ^
-  - Create `get` route and view to render form
-  - Create `patch` route to update an existing post
-
-- [x] 19. Implement DELETE functionality
-  - Create `delete` form in relevant view
-  - Create `delete` route to delete post
-
-### PART 4 — Tighten Up!: Validations and Authorization
-- [x] 20. Implement `sinatra-flash` gem to display validation failures and improve user experience (UX)
-  - Review the [docs](https://github.com/SFEley/sinatra-flash)
-  - **Tip**: a `flash[:message]` has the lifecyle of one `GET` request and will not show up when rendering an `erb` file.
-- [x] 21. Include ActiveRecord validations in your `User` and `Post` model that checks for user inputs
-  - **Ex**: Making sure all form fields are filled out or that a user is using a unique email or username
-  - Review the [docs](https://guides.rubyonrails.org/active_record_validations.html)
-  - **Tip**: `has_secure_password` has a built in validation for the `password_digest` attribute!
-- [ ] 22. Leverage the `logged_in?` helper method in the controller and/or views to implement authorization for creating a new post.
-  - Make sure a user can't create a new post without being logged in.
-- [ ] 23. Implement authorization to edit and delete.
-  - Make sure a user can't edit or delete a post that doesn't belong to them.
-- [ ] 24. Refactor your code to make it more DRY!
-  - **Ask**: Where am I repeating myself?
-- [ ] 25. Create a `README.md`
-  - Include a short description, install instructions, a contributors guide and a link to the license for your code -->
+### PART 4: OOJS Refactor
+- [ ] 1. Create a Syllabus Class
 
 ### Bonus
 - [ ] Leverage a CSS framework to improve the styling of your application
