@@ -1,3 +1,69 @@
+## PART 1 Review
+
+1. Models/Associations
+2. Schema
+3. Seed Data
+4. Follow Up Questions:
+    1. Why should we do our migrations in our respective branches?
+        - A: To fully build out features on respective branch. Merging a migration that we haven't confirmed migrates successfully compromises the master branch.
+    2. What is the `belongs_to` [attribute in migrations](https://guides.rubyonrails.org/association_basics.html#the-belongs-to-association) doing for us? What's best practice?
+        - A: It indexes our associations. `belongs_to` is actually an alias of references. Read more in [this stackoverflow answer](https://stackoverflow.com/a/9471187). Indexing our associations is best practice.
+            - `rails g model Syllabus category:references` will generates an `category_id` column in the `syllabuses` table and will modify the `syllabus.rb` model to add a` belongs_to :category` relationship.
+            - `rails g migration AddCategoryToSyllabus category:belongs_to` will generate the following migration:
+
+            ```ruby
+            class AddCategoryToSyllabus < ActiveRecord::Migration
+              def change
+                # add_reference :syllabuses, :category, null: false, foreign_key: true
+                add_reference :syllabuses, :category, foreign_key: true
+              end
+            end
+            ```
+            - Because we're using PostGres we need to delete `null: false,` so this migration will be successful. Read why [here](https://stackoverflow.com/questions/24298171/pgnotnullviolation-error-null-value-in-column-id-violates-not-null-constra).
+            - Run `rake db:migrate`
+
+            - **Updated Schema:**
+
+            ```ruby
+            ActiveRecord::Schema.define(version: 2020_04_29_192202) do
+
+              # These are extensions that must be enabled in order to support this database
+              enable_extension "plpgsql"
+
+              create_table "categories", force: :cascade do |t|
+                t.string "name"
+                t.datetime "created_at", precision: 6, null: false
+                t.datetime "updated_at", precision: 6, null: false
+              end
+
+              create_table "syllabuses", force: :cascade do |t|
+                t.string "title"
+                t.string "description"
+                t.string "image_url"
+                t.datetime "created_at", precision: 6, null: false
+                t.datetime "updated_at", precision: 6, null: false
+                t.bigint "category_id"
+                t.index ["category_id"], name: "index_syllabuses_on_category_id"
+              end
+
+              add_foreign_key "syllabuses", "categories"
+            end
+            ```
+            - Add the following to seeds file
+
+            ```ruby
+            Category.destroy_all
+            Syllabus.destroy_all
+            ```
+
+            - And add `has_many :syllabuses, dependent: :destroy` to `Category` model
+            - Then run `rake db:reset` to drop, create, and "re-seed" database.
+            - Why this is important? Foreign keys should always be indexed to improve the performance of your application. Learn more with these resources:
+                - [Using indexes in rails: Index your associations](http://archive.is/i7SLO)
+                - [:References in Rails](https://medium.com/@brianna.dixon023/references-in-rails-bc5ac3ccbd9d)
+                - [Stop forgetting your foreign key indexes in Rails with this simple post-migration script](https://alexpeattie.com/blog/stop-forgetting-foreign-key-indexes-in-rails-post-migration-script)
+                - [Ruby Docs on `add_reference`](https://edgeapi.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_reference)
+
 
 ## Routes
 
@@ -71,7 +137,7 @@ to do any additional work
 
 - When rendering JSON directly, controllers will render all attributes available by default. **Fast JSON API serializers work the other way around - we must always specify what attributes we want to include.**
 
-**NOTE:* Having the [JSON Viewer](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh?hl=en-US) Chrome extension installed. This will make JSON data much easier to read.
+**NOTE:** Having the [JSON Viewer](https://chrome.google.com/webstore/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh?hl=en-US) Chrome extension installed. This will make JSON data much easier to read.
 
 #### Adding Relationships
 
