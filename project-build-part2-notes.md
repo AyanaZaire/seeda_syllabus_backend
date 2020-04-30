@@ -81,6 +81,7 @@
       end
     end
     ```
+http://localhost:3000/rails/info/routes
 
 ## Controllers
 
