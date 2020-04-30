@@ -46,7 +46,7 @@ The application we will create during the project build series is a "Syllabus Sh
 
 ### PART 2: Routes, Controllers, Serializers
 
-- [ ] 1. Routes
+- [x] 1. Routes
     - Implement _specific_ namespaced routes for _a_ controller **for MVP**
     - REMEMBER! We're _trying_ to build vertically.
 
