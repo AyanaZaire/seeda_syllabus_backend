@@ -68,7 +68,7 @@ The application we will create during the project build series is a "Syllabus Sh
     - Build relevant routes for MVP (ex: `index` and `create`)
     - Visit `http://localhost:3000/api/v1/<your_resource_name>` to see JSON data
 
-- [ ] 3. Fast JSON Serializer
+- [x] 3. Fast JSON API Serializer
     - Add `gem 'fast_jsonapi'` to your Rails project's Gemfile and run `bundle install`
     - Create Serializer classes
       - `rails g serializer <your_resource_name>`
@@ -101,7 +101,7 @@ The application we will create during the project build series is a "Syllabus Sh
         - To control the attributes displayed in the association view PART 2 notes on adding relationships
 
 
-- [ ] 4. **TEST:** Confirm data at your Rails endpoints! (ex: `http://seeda.com/api/v1/syllabuses`)
+- [x] 4. **TEST:** Confirm data at your Rails endpoints! (ex: `http://seeda.com/api/v1/syllabuses`)
 - [ ] 5. Build out your associated models using this same process. **REMEMBER: Focus on building vertically for MVP** this means only starting with 2 or 3 models before moving on to the frontend.
 
 
