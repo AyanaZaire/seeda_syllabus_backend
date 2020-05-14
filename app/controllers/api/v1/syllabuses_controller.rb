@@ -15,7 +15,7 @@ class Api::V1::SyllabusesController < ApplicationController
   def create
     syllabus = Syllabus.new(syllabus_params)
     if syllabus.save
-      render json: syllabus, status: :accepted
+      render json: SyllabusSerializer.new(syllabus), status: :accepted
     else
       render json: {errors: syllabus.errors.full_messages}, status: :unprocessible_entity
     end
