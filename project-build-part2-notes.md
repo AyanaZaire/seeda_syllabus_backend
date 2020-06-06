@@ -125,7 +125,7 @@ end
 1. We're rendering all syllabuses in the form of JSON.
 2. We're creating a new syllabus based on whatever `syllabus_params` we get from our frontend.
 3. We're setting out `syllabus_params` to permit a parameter named `title`, `description`, `image_url` and `category_id`. _These must be included in the body of the POST or PATCH requests we will be making with JS `fetch`._
-4. We're setting the status based on the a successful `.save`. Check out the following links for more info on the [202 (Accepted)](https://httpstatuses.com/202) and [422 (Unprocessible Entity)](https://httpstatuses.com/422) status codes — along with other [`httpstatuses`](https://httpstatuses.com/) you can use in your methods.
+4. We're setting the status based on the a successful `.save`. Check out the following links for more info on the [202 (Accepted)](https://httpstatuses.com/202) and [422 (Unprocessable Entity)](https://httpstatuses.com/422) status codes — along with other [`httpstatuses`](https://httpstatuses.com/) you can use in your methods.
 
 ## Serializers
 
