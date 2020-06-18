@@ -102,6 +102,11 @@ We can later add validations to make sure a syllabus can only have a max of 3 co
 ##### 4. Test
 First, let's see if our syllabus is associated with our concentrations. In our console let's run:
 ```BASH
+~ $ rake db:migrate
+~ $ rake db:seed
+~ $ rails c
+# Let's make sure all our concentrations seed data looks right
+~ $ Concentration.all
 # Let's make sure all our syllabus seed data looks right
 ~ $ Syllabus.all
 # Let's grab a syllabus instance to call our has_many .concentration method
@@ -130,7 +135,7 @@ If you proposed the following, you're close! What's going to go wrong here?
 - Concentration `has_many :keywords`
 - Syllabus `has_many :keywords`
 
-We want users to eventually be able to query our site by keyword to discover other syllabi associated with their research. A syllabus is going to have many keywords but a keyword can have many concentrations and a concentration can have many keywords. This means we're going to need a join model to properly test this association!
+We want users to eventually be able to query our site by keyword to discover other syllabi associated with their research. A syllabus is going to have many keywords but a keyword can have many concentrations and a concentration can have many keywords. This means we're going to need a join table to properly test this association!
 
 ##### 1. Migration
 Let's run the migrations to get this tested:
@@ -205,12 +210,41 @@ pedagogy_classroom = ConcentrationKeyword.create(concentration_id: pedagogy.id, 
 ##### 4. Test
 First, let's see if our keywords associated associated with their concentration. In our console let's run:
 ```BASH
+~ $ rake db:migrate
+~ $ rake db:seed
+```
+
+**REMEMBER:** We have foreign key constraints on some of our tables. In both `Syllabus` and `Concentration` we must add `dependent: :destroy` to some of our `has_many` associations.
+
+```ruby
+class Syllabus < ApplicationRecord
+  belongs_to :category
+
+  # foreign key constraints
+  has_many :concentrations, dependent: :destroy
+
+  has_many :concentration_keywords, through: :concentrations
+  has_many :keywords, through: :concentration_keywords
+
+  validates :title, presence: true
+end
+
+class Concentration < ApplicationRecord
+  belongs_to :syllabus
+
+  # foreign key constraints
+  has_many :concentration_keywords, dependent: :destroy
+  has_many :keywords, through: :concentration_keywords
+end
+```
+
+```BASH
+# Now that we've added `dependent: :destroy` where we have foreign key constraints
+~ $ rake db:seed
+~ $ rails c
 # Let's make sure all our keyword and concentration_keyword seed data looks right
 ~ $ Keyword.all
 ~ $ ConcentrationKeyword.all
-# Let's grab a keyword instance to call our has_many .concentrations method
-~ $ decentralization = Keyword.find_by(word: "Decentralization")
-~ $ decentralization.concentrations
 ```
 
 Now let's check if a concentration has many keywords. Let's run:
@@ -254,15 +288,23 @@ Let's update our models with our new associations:
 # IN SYLLABUS MODEL
 class Syllabus < ApplicationRecord
   belongs_to :category
-  has_many :concentrations
+  has_many :concentrations, dependent: :destroy
+
+  has_many :concentration_keywords, through: :concentrations
+  has_many :keywords, through: :concentration_keywords
+
   has_many :projects, through: :concentrations
+
+  validates :title, presence: true
 end
 
 # IN CONCENTRATION MODEL
 class Concentration < ApplicationRecord
   belongs_to :syllabus
-  has_many :concentration_keywords
+
+  has_many :concentration_keywords, dependent: :destroy
   has_many :keywords, through: :concentration_keywords
+
   has_many :projects
 end
 
@@ -277,11 +319,11 @@ Lastly, let's create some seed data for testing
 ```ruby
 # PROJECTS
 # feature to add: a project can belong to many concentrations (add a join table between project and concentration)
-seeda_syllabus = Project.create(title: "Seeda Syllabus", description: "Seeda is a decentralized institute for black thought and collective study. The mission is: collectively create and share educational resources that will aid in liberation. Seeda is related to my IOS as it is a pedagogy research practice imagining how we might dismantle the industrialization of education and leverage the decentralization power of the internet.", deadline: "05/15/2020", concentration_id: pedagogy.id)
+seeda_syllabus = Project.create(title: "Seeda Syllabus", description: "Seeda Syllabus is a decentralized learning framework for independent and collective study. The mission is: collectively create and share educational resources that will aid in liberation. Seeda is related to my IOS as it is a pedagogy research practice imagining how we might dismantle the industrialization of education and leverage the decentralization power of the internet.", deadline: "05/15/2020", concentration_id: pedagogy.id)
 
 griot_practice = Project.create(title: "Griot Practice", description: "With a “Sankofa sensibility” my practice as a griot engages our collective memory by using storytelling to educate us on our past and paint the future. The primary materials I am employing are copper, cotton, leather, acrylic paint, and appropriating photographs. Relying on the black DIY aesthetic the works will be grounded in familiarity while also feeling suspended in an alternate world.", deadline: "09/15/2020", concentration_id: industrialization.id)
 
-seeda_studio = Project.create(title: "Seeda Studio", description: "Community Organizations and Government Institutions are receiving high demand for STEAM skills training but don’t have the in-house ability to design curriculum in line with their goals, values, and student needs and train instructors on said curriculum. Seeda Studio provides a bespoke curriculum design offering by leveraging skill and experience in co-building and deploying tech pedagogy and leveraging community organizing experience by ensuring this curriculum is human centered and designed around the organizations values.", deadline: "05/15/2020", concentration_id: imagination.id)
+seeda_studio = Project.create(title: "Seeda Studio", description: "Research a design studio idea where people build technology tools for their communities.", deadline: "05/15/2020", concentration_id: imagination.id)
 
 ```
 
@@ -290,18 +332,21 @@ We can later add validations to make sure a syllabus can only have a max of 4 pr
 ##### 4. Test
 First, let's see if our projects associated associated with their syllabus. In our console let's run:
 ```BASH
+~ $ rake db:migrate
+~ $ rake db:seed
+~ $ rails c
 # Let's make sure all our project seed data looks right
 ~ $ Project.all
-# Let's grab a project instance to call our belongs_to .syllabus method
+# Let's grab a project instance to call our belongs_to .concentration method
 ~ $ project = Project.first
-~ $ project.syllabus
+~ $ project.concentration
 ```
 
 Now let's check if a concentration is associated with a project. Let's run:
 ```BASH
 # Let's make sure all our concentration seed data is populated
 ~ $ imagination = Concentration.first
-~ $ imagination.concentration
+~ $ imagination.projects
 ```
 
 Lastly, let's check if a syllabus has many projects. Let's run:
@@ -310,3 +355,13 @@ Lastly, let's check if a syllabus has many projects. Let's run:
 ~ $ syllabus = Syllabus.first
 ~ $ syllabus.projects
 ```
+
+### Conclusion
+
+**HOMEWORK:** How might we build our relationships so I can call _both_ `syllabus.keywords` and `keyword.syllabuses`?
+
+We haven't yet added validations to our models and we may have to update our associations when we start on our other stretch goals like implementing auth for users, required resources, and learning goals. THAT diagram might look something like this: [Seeda Syllabus API Associations Diagram](https://drive.google.com/file/d/1OBdTaaOXadhUTV8QEsZYdZU9mhwXRsDo/view?usp=sharing).
+
+
+
+BUT we know have a solid foundation to build on as we set our sights on new stretch goals. In the meantime, we have plenty of data to work with. In the next session we're going to work on implementing Bootstrap on the front end to improve the UI on our frontend.
