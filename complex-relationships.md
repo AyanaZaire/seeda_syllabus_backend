@@ -4,8 +4,8 @@ Continued from 4 PART JS project build series where we currently have 2 models:
 1. Syllabus
 2. Category
 
-Syllabus `has_many :categories`
-Category `belongs_to :syllabus`
+Syllabus `belongs_to :categories`
+Category `has_many :syllabus`
 
 But let's say we want to build this into a true syllabus with associated keywords, themes/concentrations, required resources, projects, learning goals etc. We'd need more models!
 
