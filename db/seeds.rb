@@ -13,7 +13,7 @@ Concentration.destroy_all
 ConcentrationKeyword.destroy_all
 Keyword.destroy_all
 
-ayana = User.create(name: "Ayana", email: "ayana@ayana.com", password_digest: "pw", image_url: "https://avatars2.githubusercontent.com/u/892860?s=460&u=18352cab468ae7d35e839d80fe23d34e5ff6e0bb&v=4", bio: "artist, designer, and teacher")
+ayana = User.create(name: "Ayana", email: "ayana@ayana.com", password: "pw", image_url: "https://avatars2.githubusercontent.com/u/892860?s=460&u=18352cab468ae7d35e839d80fe23d34e5ff6e0bb&v=4", bio: "artist, designer, and teacher")
 
 art = Category.create(name: "Art")
 tech = Category.create(name: "Tech")
