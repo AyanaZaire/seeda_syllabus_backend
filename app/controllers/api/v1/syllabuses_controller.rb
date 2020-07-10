@@ -1,4 +1,5 @@
 class Api::V1::SyllabusesController < ApplicationController
+  skip_before_action :authorized
 
   def index
     syllabuses = Syllabus.all

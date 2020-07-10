@@ -6,6 +6,8 @@ namespace :api do
     resources :syllabuses, only: [:index, :create]
     resources :categories, only: [:index]
     resources :users, only: [:create]
+    post '/login', to: 'auth#create'
+    get '/profile', to: 'users#profile'
   end
 end
 
