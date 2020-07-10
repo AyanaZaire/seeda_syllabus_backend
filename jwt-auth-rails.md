@@ -401,3 +401,7 @@ end
 ```
 
 Now you'll be able to make a `GET` fetch request to `profile` or any other methods using the JWT token on the frontend and your `current_user` helper method.
+
+## Questions to answer next session:
+1. How would I create a syllabus with a logged in user?
+2. Do we need the `true` argument when decoding the token? `JWT.decode(token, 'my_s3cr3t', true, algorithm: 'HS256')`
