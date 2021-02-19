@@ -19,7 +19,7 @@ class Api::V1::SyllabusesController < ApplicationController
     if syllabus.save
       render json: SyllabusSerializer.new(syllabus), status: :accepted
     else
-      render json: {errors: syllabus.errors.full_messages}, status: :unprocessible_entity
+      render json: {errors: syllabus.errors.full_messages}, status: status: :unprocessable_entity
     end
   end
 
